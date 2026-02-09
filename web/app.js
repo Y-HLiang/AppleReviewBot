@@ -1,11 +1,18 @@
 // 配置
-const DATA_URL = '../data/reviews.json';
+let APP_ID = '414478124'; // 默认微信
+let COUNTRY_CODE = 'cn'; // 默认中国
+
+// 从 URL 参数读取配置
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('appId')) APP_ID = urlParams.get('appId');
+if (urlParams.get('country')) COUNTRY_CODE = urlParams.get('country');
 
 // 全局变量
 let allReviews = [];
 let filteredReviews = [];
 let currentRatingFilter = 'all';
 let currentSearchTerm = '';
+let appInfo = {};
 
 // DOM 元素
 const loadingEl = document.getElementById('loading');
@@ -14,35 +21,94 @@ const reviewsListEl = document.getElementById('reviewsList');
 const noResultsEl = document.getElementById('noResults');
 const searchInput = document.getElementById('searchInput');
 const filterBtns = document.querySelectorAll('.filter-btn');
+const appIdInput = document.getElementById('appIdInput');
+const countrySelect = document.getElementById('countrySelect');
+const loadBtn = document.getElementById('loadBtn');
 
 // 初始化
 async function init() {
+  // 设置初始值
+  appIdInput.value = APP_ID;
+  countrySelect.value = COUNTRY_CODE;
+  
   try {
     await loadReviews();
     setupEventListeners();
     renderReviews();
     updateStats();
   } catch (error) {
+    console.error('Init error:', error);
     showError();
   }
 }
 
 // 加载评论数据
 async function loadReviews() {
+  const API_URL = `https://itunes.apple.com/${COUNTRY_CODE}/rss/customerreviews/id=${APP_ID}/sortBy=mostRecent/json`;
+  
   try {
-    const response = await fetch(DATA_URL);
+    showLoading();
+    const response = await fetch(API_URL);
     if (!response.ok) throw new Error('Failed to load reviews');
-    allReviews = await response.json();
+    
+    const data = await response.json();
+    const entries = data.feed.entry || [];
+    
+    // 第一条通常是 App 信息
+    if (entries.length > 0) {
+      appInfo = {
+        name: entries[0]['im:name']?.label || 'App',
+        icon: entries[0]['im:image']?.[2]?.label || '',
+        link: entries[0].link?.attributes?.href || ''
+      };
+      updateAppInfo();
+    }
+    
+    // 其余是评论数据
+    allReviews = entries.slice(1).map(entry => ({
+      id: entry.id.label,
+      title: entry.title.label,
+      content: entry.content.label,
+      rating: entry['im:rating']?.label || 'N/A',
+      author: entry.author.name.label,
+      updated: entry.updated.label,
+      timestamp: new Date(entry.updated.label).getTime()
+    }));
+    
     filteredReviews = [...allReviews];
     hideLoading();
   } catch (error) {
     console.error('Error loading reviews:', error);
+    hideLoading();
     throw error;
   }
 }
 
 // 设置事件监听
 function setupEventListeners() {
+  // 加载按钮
+  loadBtn.addEventListener('click', async () => {
+    APP_ID = appIdInput.value.trim();
+    COUNTRY_CODE = countrySelect.value;
+    
+    if (!APP_ID) {
+      alert('请输入 App ID');
+      return;
+    }
+    
+    // 更新 URL
+    const newUrl = `${window.location.pathname}?appId=${APP_ID}&country=${COUNTRY_CODE}`;
+    window.history.pushState({}, '', newUrl);
+    
+    try {
+      await loadReviews();
+      renderReviews();
+      updateStats();
+    } catch (error) {
+      showError();
+    }
+  });
+  
   // 评分筛选
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -115,6 +181,14 @@ function renderReviews() {
   reviewsListEl.innerHTML = html;
 }
 
+// 更新 App 信息
+function updateAppInfo() {
+  if (appInfo.name) {
+    const titleEl = document.querySelector('.header h1');
+    titleEl.innerHTML = `📱 ${escapeHtml(appInfo.name)} - 评论监控`;
+  }
+}
+
 // 更新统计信息
 function updateStats() {
   // 总评论数
@@ -174,6 +248,13 @@ function escapeHtml(text) {
 
 function hideLoading() {
   loadingEl.style.display = 'none';
+}
+
+function showLoading() {
+  loadingEl.style.display = 'block';
+  errorEl.style.display = 'none';
+  reviewsListEl.innerHTML = '';
+  noResultsEl.style.display = 'none';
 }
 
 function showError() {

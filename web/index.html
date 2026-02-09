@@ -10,6 +10,22 @@
   <div class="container">
     <header class="header">
       <h1>📱 App Store 评论监控</h1>
+      <div class="config-bar">
+        <div class="config-inputs">
+          <input type="text" id="appIdInput" placeholder="App ID (如: 414478124)" value="414478124">
+          <select id="countrySelect">
+            <option value="cn">🇨🇳 中国</option>
+            <option value="us">🇺🇸 美国</option>
+            <option value="jp">🇯🇵 日本</option>
+            <option value="hk">🇭🇰 香港</option>
+            <option value="tw">🇹🇼 台湾</option>
+            <option value="gb">🇬🇧 英国</option>
+            <option value="kr">🇰🇷 韩国</option>
+            <option value="au">🇦🇺 澳大利亚</option>
+          </select>
+          <button id="loadBtn" class="load-btn">加载评论</button>
+        </div>
+      </div>
       <div class="stats">
         <div class="stat-item">
           <span class="stat-label">总评论数</span>
