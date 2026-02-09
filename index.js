@@ -103,6 +103,42 @@ async function sendDingTalkNotification(newReviews) {
   }
 }
 
+// 发送检查完成通知
+async function sendCheckCompleteNotification() {
+  if (!config.dingtalkWebhook) {
+    console.log('未配置钉钉 Webhook，跳过通知');
+    return;
+  }
+
+  try {
+    let url = config.dingtalkWebhook;
+    const timestamp = Date.now();
+    let sign = '';
+
+    // 如果配置了加签密钥
+    if (config.dingtalkSecret) {
+      const stringToSign = `${timestamp}\n${config.dingtalkSecret}`;
+      sign = crypto.createHmac('sha256', config.dingtalkSecret)
+        .update(stringToSign)
+        .digest('base64');
+      url += `&timestamp=${timestamp}&sign=${encodeURIComponent(sign)}`;
+    }
+
+    const now = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    const message = {
+      msgtype: 'text',
+      text: {
+        content: `✅ App Store 评论检查完成\n\n检查时间：${now}\n结果：暂无新评论`
+      }
+    };
+
+    await axios.post(url, message);
+    console.log('已发送检查完成通知');
+  } catch (error) {
+    console.error('发送检查完成通知失败:', error.message);
+  }
+}
+
 // 主函数
 async function main() {
   console.log('开始检查 App Store 评论...');
@@ -123,15 +159,18 @@ async function main() {
   // 找出新评论
   const newReviews = currentReviews.filter(review => !historyIds.has(review.id));
   
-  // 只有在历史记录存在且有新评论时才发送通知
-  // 首次运行时 historyReviews 为空，不会发送通知
+  // 发送通知
   if (newReviews.length > 0 && historyReviews.length > 0) {
+    // 有新评论
     console.log(`发现 ${newReviews.length} 条新评论`);
     await sendDingTalkNotification(newReviews);
   } else if (newReviews.length > 0 && historyReviews.length === 0) {
+    // 首次运行
     console.log(`首次运行，发现 ${newReviews.length} 条评论，不发送通知`);
   } else {
-    console.log('没有新评论');
+    // 没有新评论，发送检查完成通知
+    console.log('没有新评论，发送检查完成通知');
+    await sendCheckCompleteNotification();
   }
   
   // 保存最新数据
