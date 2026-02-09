@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Store 评论监控</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #1d1d1f; margin-bottom: 30px; text-align: center; }
+    .review-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .review-title { font-size: 18px; font-weight: 600; color: #1d1d1f; }
+    .review-rating { color: #ff9500; font-size: 16px; }
+    .review-content { color: #424245; line-height: 1.6; margin-bottom: 15px; }
+    .review-meta { display: flex; justify-content: space-between; color: #86868b; font-size: 14px; }
+    .update-time { text-align: center; color: #86868b; margin-top: 30px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 App Store 评论监控</h1>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">出个禁言功能</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">受不了了，快点出</div>
+      <div class="review-meta">
+        <span>👤 刘邦666</span>
+        <span>🕐 2026-02-07T07:33:12-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">微信文件</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">此版本微信文档及公众号文章阅览无在电脑上打开选项，请改进</div>
+      <div class="review-meta">
+        <span>👤 诗酒年华2016</span>
+        <span>🕐 2026-02-07T07:33:07-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">什么时候能加个夜间模式的图标？</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">开发微信的人不用这个功能？</div>
+      <div class="review-meta">
+        <span>👤 joonrain</span>
+        <span>🕐 2026-02-07T07:27:14-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">更新完一点小程序就闪退</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">点小程序就闪退</div>
+      <div class="review-meta">
+        <span>👤 syuubungei</span>
+        <span>🕐 2026-02-07T07:27:07-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">镜像问题改一下</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">镜像能不能改一下，打视频真的不好看</div>
+      <div class="review-meta">
+        <span>👤 沟门口小张</span>
+        <span>🕐 2026-02-07T07:26:25-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">通知显示功能</div>
+        <div class="review-rating">⭐⭐</div>
+      </div>
+      <div class="review-content">凭什么别人更新完就有通知好友头像，我为什么没有</div>
+      <div class="review-meta">
+        <span>👤 陈.少年</span>
+        <span>🕐 2026-02-07T07:25:26-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">新版本小程序无限闪退…</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">尽快修复一下？</div>
+      <div class="review-meta">
+        <span>👤 大树下的我</span>
+        <span>🕐 2026-02-07T07:23:44-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">打开小程序就闪退</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">更新之后，一打开小程序就闪退，能不能解决一下啊</div>
+      <div class="review-meta">
+        <span>👤 哈哈哈哈哈哈哈哈哈123556890zhrng</span>
+        <span>🕐 2026-02-07T07:19:18-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">每次打开会黑屏好久</div>
+        <div class="review-rating">⭐⭐</div>
+      </div>
+      <div class="review-content">每次打开会黑屏好久，软件越来越臃肿。</div>
+      <div class="review-meta">
+        <span>👤 Alhfjf</span>
+        <span>🕐 2026-02-07T07:19:10-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">建议</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">致微信团队：
+我本人作为一名程序设计竞赛选手，知道开发或优化软件的困难，可为什么IOS端如此多的功能无法与手机端（或者其他品牌的平板）相齐平？很多ipad用户的需求（比如修改微信号）无法正常被满足，如果没有手机就只能用模拟器，但从25年8月15日开始又无法合规使用模拟器。
+其次，电脑版微信的登陆为什么不能做的像移动端那样？同样的双重验证，安全性会比登陆移动端小？为什么一定要移动端确认或者扫码呢？
+微信作为一个国民级社交软件，已经成为人们生活中的必备，希望微信团队可以给予重视，不要忽略小群体的感受🙏🙏🙏</div>
+      <div class="review-meta">
+        <span>👤 ThousanSummers</span>
+        <span>🕐 2026-02-07T07:09:07-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">小程序一直闪退进不去</div>
+      <div class="review-meta">
+        <span>👤 完美的禽兽</span>
+        <span>🕐 2026-02-07T07:05:53-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">8.0.69 这个最新版本 有 BUG，赶紧修复呦</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">69 最新版本，小程序闪退，请大佬赶紧修复噢。</div>
+      <div class="review-meta">
+        <span>👤 抖爸爸来了</span>
+        <span>🕐 2026-02-07T07:05:40-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">显示头像</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">真无语了 要更新就全都更了 还灰度测试 搞这些恶心人</div>
+      <div class="review-meta">
+        <span>👤 一起流过的泪你还记得吗</span>
+        <span>🕐 2026-02-07T07:03:40-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">8.0.69小程序打开闪退</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">刚更新完8.0.69，一打开小程序微信就闪退</div>
+      <div class="review-meta">
+        <span>👤 songhezhong</span>
+        <span>🕐 2026-02-07T07:00:38-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序闪退</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">小程序闪退严重 点一下小程序直接干会桌面 清理缓存 重启手机都不行 日志已上传 突然就不能点小程序😢</div>
+      <div class="review-meta">
+        <span>👤 gsw16</span>
+        <span>🕐 2026-02-07T06:58:57-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">朋友圈视频画质</div>
+        <div class="review-rating">⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">希望改善一下朋友圈视频的画质。 每次4k的视频发朋友圈，结果点进朋友圈一看，都不咋行</div>
+      <div class="review-meta">
+        <span>👤 姚晓棠🍬</span>
+        <span>🕐 2026-02-07T06:57:57-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序闪退</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">刚更新完一点小程序就闪退</div>
+      <div class="review-meta">
+        <span>👤 手套进行按摩</span>
+        <span>🕐 2026-02-07T06:57:17-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">更新后小程序界面闪退啊！！！太坑了！</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">快点修复啊！</div>
+      <div class="review-meta">
+        <span>👤 红豆薏米酥</span>
+        <span>🕐 2026-02-07T06:56:50-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">更新完，锁屏显示头像咋还没有？？？</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">为什么还没有锁屏显示头像呀？？？？</div>
+      <div class="review-meta">
+        <span>👤 Comair圣柯</span>
+        <span>🕐 2026-02-07T06:54:47-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">信息延遲</div>
+        <div class="review-rating">⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">不打開微信，不會彈信息出來電話也是一樣。有時候彈信息的話也是過了10分鐘左右才彈出來</div>
+      <div class="review-meta">
+        <span>👤 Kuan si</span>
+        <span>🕐 2026-02-07T06:52:53-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">重启</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">更新后点小程度，微信就闪退！修复也没用！</div>
+      <div class="review-meta">
+        <span>👤 陈尚正</span>
+        <span>🕐 2026-02-07T06:48:39-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">头像</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">聊天框没有小话筒，消息也不显示头像，如果不能普及大众就不要提前内测。。。。</div>
+      <div class="review-meta">
+        <span>👤 番茄脆</span>
+        <span>🕐 2026-02-07T06:45:17-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">如果没啥可更新的可以不更</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">如果没啥可更新的可以不更。弄个显示头像，更新好几轮了也没全覆盖，如果不想让大家都用可以不推出新功能。服了都！！！！</div>
+      <div class="review-meta">
+        <span>👤 小怪咖</span>
+        <span>🕐 2026-02-07T06:42:49-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">iPad播放语音声音小！！！</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">iPad播放语音声音小！！！iPad播放语音声音小！！！iPad播放语音声音小！！！</div>
+      <div class="review-meta">
+        <span>👤 35¥563</span>
+        <span>🕐 2026-02-07T06:42:31-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">微信</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">更新后不能使用小程序，直接退出</div>
+      <div class="review-meta">
+        <span>👤 静乐@</span>
+        <span>🕐 2026-02-07T06:42:16-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">垃圾东西</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">天天弹账号风险我啥也没干不让我加好友找微信团队就装傻子建议反馈  反馈你妹</div>
+      <div class="review-meta">
+        <span>👤 都能见到的贝贝我和黑到北京闻鸡起舞</span>
+        <span>🕐 2026-02-07T06:41:51-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">什么时候适配深色图标！！</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">什么时候适配深色图标！！</div>
+      <div class="review-meta">
+        <span>👤 镇zhen</span>
+        <span>🕐 2026-02-07T06:38:17-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">越来越垃圾</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">真服了，刚更新的，一点小程序就闪退，这种更新还更新它干啥？恶心人用的？</div>
+      <div class="review-meta">
+        <span>👤 要p昵称</span>
+        <span>🕐 2026-02-07T06:37:51-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">图标</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">微信图标到底能不能随系统变黑？</div>
+      <div class="review-meta">
+        <span>👤 优酷图标真丑</span>
+        <span>🕐 2026-02-07T06:25:56-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">功能缺失，一个输入框语音转文字三个版本都不给，又不是什么宝贝</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">没眼看，这个功能不给，那个功能不给，输入框语音转文字三个版本都还没灰度到，要么不给，要么全给咯</div>
+      <div class="review-meta">
+        <span>👤 你那霸气十足的大哥</span>
+        <span>🕐 2026-02-07T06:24:58-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">无聊</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">没有新功能不知道你们咋更新啥意思</div>
+      <div class="review-meta">
+        <span>👤 爱机测评</span>
+        <span>🕐 2026-02-07T06:22:46-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">什么时候提升画质</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">微信什么时候能够提升画质或者有更改画质的功能 让不同的用户有不同的适配 多个选择 而不是分享生活时被画质恶心到 不能够满足对分享这方面的社交功能 希望能改改</div>
+      <div class="review-meta">
+        <span>👤 会更好快爆发</span>
+        <span>🕐 2026-02-07T06:22:33-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">微信团队好讨厌</div>
+        <div class="review-rating">⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">不让我点赞 每次刷个视频都给我弄出来</div>
+      <div class="review-meta">
+        <span>👤 桂Deh</span>
+        <span>🕐 2026-02-07T06:21:48-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">更新了个寂寞</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">垃圾，更新半天啥也没有，更新个寂寞，呸，啥也不是</div>
+      <div class="review-meta">
+        <span>👤 不啊bum</span>
+        <span>🕐 2026-02-07T06:21:37-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">更新完版本8.0.69后点击发现-小程序，微信自动闪退 搞毛线啊？</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">更新完版本8.0.69后点击发现-小程序，微信自动闪退 搞毛线啊？耽误事知道不？zhuajin修复这bug</div>
+      <div class="review-meta">
+        <span>👤 Csjdnx</span>
+        <span>🕐 2026-02-07T06:20:40-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">微信电话一点提示都没有</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">太垃圾了</div>
+      <div class="review-meta">
+        <span>👤 的士图快来</span>
+        <span>🕐 2026-02-07T06:08:05-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">？</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">吗的，自动给我拒绝电话</div>
+      <div class="review-meta">
+        <span>👤 有第一季，嗯，的，doing</span>
+        <span>🕐 2026-02-07T06:04:03-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">.</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">通知头像显示</div>
+      <div class="review-meta">
+        <span>👤 jsvvahsgag</span>
+        <span>🕐 2026-02-07T06:01:11-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">相机</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">太卡顿 闪屏 黑屏 垃圾的要死</div>
+      <div class="review-meta">
+        <span>👤 哦嗯莫μ</span>
+        <span>🕐 2026-02-07T05:53:46-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序闪退！</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">今天更新IOS最新版8.0.69，小程序闪退，无法使用！</div>
+      <div class="review-meta">
+        <span>👤 Plateaustar</span>
+        <span>🕐 2026-02-07T05:53:35-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">最新版有缺陷</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">最新版有部分功能🈶️闪退现象直接影响使用</div>
+      <div class="review-meta">
+        <span>👤 Lz木子雨辰</span>
+        <span>🕐 2026-02-07T05:49:51-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">微信真好用</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">可以玩小游戏</div>
+      <div class="review-meta">
+        <span>👤 赵羽晨</span>
+        <span>🕐 2026-02-07T05:41:34-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">垃圾</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">太垃圾了，这辈子第一次评论软件。小程序闪退，试了我能搜到的各种办法，还是闪退，真的服了。</div>
+      <div class="review-meta">
+        <span>👤 红线绕指柔920</span>
+        <span>🕐 2026-02-07T05:40:05-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">打字键盘卡死不动</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">怎么升级完反而有键盘卡死不动现象</div>
+      <div class="review-meta">
+        <span>👤 大鱼田</span>
+        <span>🕐 2026-02-07T05:36:18-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">什么时候能更换主题</div>
+        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div class="review-content">购买也行啊，聊天气泡皮肤什么的，让微信也能变好看行不行。省的好多人还得去弄定制V。。微信作为每天所有人都使用的app，也出点女孩子喜欢的皮肤吧球球</div>
+      <div class="review-meta">
+        <span>👤 无聊的小鸡蛋</span>
+        <span>🕐 2026-02-07T05:34:53-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">1</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">改名巨信比较好</div>
+      <div class="review-meta">
+        <span>👤 想见我就没想你即将结束</span>
+        <span>🕐 2026-02-07T05:34:19-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序闪退</div>
+        <div class="review-rating">⭐⭐⭐</div>
+      </div>
+      <div class="review-content">小程序闪退</div>
+      <div class="review-meta">
+        <span>👤 滴水穿石791106</span>
+        <span>🕐 2026-02-07T05:33:47-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">小程序打不开</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">小程序打不开，体验感极差</div>
+      <div class="review-meta">
+        <span>👤 小哈就可以</span>
+        <span>🕐 2026-02-07T05:32:24-07:00</span>
+      </div>
+    </div>
+    
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">少女心事</div>
+        <div class="review-rating">⭐</div>
+      </div>
+      <div class="review-content">我觉得微信官方能不能去封那些真正有违规的人啊我真服了我加个好友跟我加好友的那个功能封掉了我换一个新手机啥的莫名其妙给我封了我微信一解封就联系给我封身边的朋友我都找了很多个了我都不好意思找人家明白吗你这个官方能不能做点你该做的能不能别老莫名其妙封无辜人的微信啊</div>
+      <div class="review-meta">
+        <span>👤 做人要像少羽一样</span>
+        <span>🕐 2026-02-07T05:31:26-07:00</span>
+      </div>
+    </div>
+    
+    <div class="update-time">最后更新: 2026/2/9 09:50:55</div>
+  </div>
+</body>
+</html>
