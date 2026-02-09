@@ -123,9 +123,13 @@ async function main() {
   // 找出新评论
   const newReviews = currentReviews.filter(review => !historyIds.has(review.id));
   
-  if (newReviews.length > 0) {
+  // 只有在历史记录存在且有新评论时才发送通知
+  // 首次运行时 historyReviews 为空，不会发送通知
+  if (newReviews.length > 0 && historyReviews.length > 0) {
     console.log(`发现 ${newReviews.length} 条新评论`);
     await sendDingTalkNotification(newReviews);
+  } else if (newReviews.length > 0 && historyReviews.length === 0) {
+    console.log(`首次运行，发现 ${newReviews.length} 条评论，不发送通知`);
   } else {
     console.log('没有新评论');
   }
