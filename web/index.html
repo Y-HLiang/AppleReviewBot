@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Store 评论监控</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>📱 App Store 评论监控</h1>
+      <div class="stats">
+        <div class="stat-item">
+          <span class="stat-label">总评论数</span>
+          <span class="stat-value" id="totalCount">-</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">平均评分</span>
+          <span class="stat-value" id="avgRating">-</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">最后更新</span>
+          <span class="stat-value" id="lastUpdate">-</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label>评分筛选：</label>
+        <button class="filter-btn active" data-rating="all">全部</button>
+        <button class="filter-btn" data-rating="5">⭐⭐⭐⭐⭐</button>
+        <button class="filter-btn" data-rating="4">⭐⭐⭐⭐</button>
+        <button class="filter-btn" data-rating="3">⭐⭐⭐</button>
+        <button class="filter-btn" data-rating="2">⭐⭐</button>
+        <button class="filter-btn" data-rating="1">⭐</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索评论内容...">
+      </div>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>加载中...</p>
+    </div>
+
+    <div id="error" class="error" style="display: none;">
+      <p>加载失败，请稍后重试</p>
+    </div>
+
+    <div id="reviewsList" class="reviews-list"></div>
+
+    <div id="noResults" class="no-results" style="display: none;">
+      <p>😔 没有找到匹配的评论</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
