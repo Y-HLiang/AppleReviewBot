@@ -1,0 +1,17 @@
+{
+  "name": "appstore-review-monitor",
+  "version": "1.0.0",
+  "description": "Monitor App Store reviews and send notifications to DingTalk",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": ["appstore", "reviews", "monitor", "dingtalk"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "crypto": "^1.0.1"
+  }
+}

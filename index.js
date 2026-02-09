@@ -1,0 +1,199 @@
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const config = require('./config');
+
+// 确保数据目录存在
+const dataDir = path.dirname(config.dataFile);
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// 获取评论数据
+async function fetchReviews() {
+  try {
+    const response = await axios.get(config.getApiUrl());
+    const entries = response.data.feed.entry || [];
+    
+    // 过滤掉第一条（通常是 App 信息）
+    const reviews = entries.slice(1).map(entry => ({
+      id: entry.id.label,
+      title: entry.title.label,
+      content: entry.content.label,
+      rating: entry['im:rating']?.label || 'N/A',
+      author: entry.author.name.label,
+      updated: entry.updated.label,
+      timestamp: new Date(entry.updated.label).getTime()
+    }));
+    
+    return reviews;
+  } catch (error) {
+    console.error('获取评论失败:', error.message);
+    return [];
+  }
+}
+
+// 读取历史评论
+function readHistoryReviews() {
+  try {
+    if (fs.existsSync(config.dataFile)) {
+      const data = fs.readFileSync(config.dataFile, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('读取历史数据失败:', error.message);
+  }
+  return [];
+}
+
+// 保存评论数据
+function saveReviews(reviews) {
+  try {
+    fs.writeFileSync(config.dataFile, JSON.stringify(reviews, null, 2), 'utf8');
+    console.log('评论数据已保存');
+  } catch (error) {
+    console.error('保存数据失败:', error.message);
+  }
+}
+
+// 发送钉钉通知
+async function sendDingTalkNotification(newReviews) {
+  if (!config.dingtalkWebhook) {
+    console.log('未配置钉钉 Webhook，跳过通知');
+    return;
+  }
+
+  try {
+    let url = config.dingtalkWebhook;
+    const timestamp = Date.now();
+    let sign = '';
+
+    // 如果配置了加签密钥
+    if (config.dingtalkSecret) {
+      const stringToSign = `${timestamp}\n${config.dingtalkSecret}`;
+      sign = crypto.createHmac('sha256', config.dingtalkSecret)
+        .update(stringToSign)
+        .digest('base64');
+      url += `&timestamp=${timestamp}&sign=${encodeURIComponent(sign)}`;
+    }
+
+    for (const review of newReviews) {
+      const message = {
+        msgtype: 'markdown',
+        markdown: {
+          title: '新的 App Store 评论',
+          text: `### 📱 新的 App Store 评论\n\n` +
+                `**评分：** ${'⭐'.repeat(parseInt(review.rating) || 0)}\n\n` +
+                `**标题：** ${review.title}\n\n` +
+                `**内容：** ${review.content}\n\n` +
+                `**作者：** ${review.author}\n\n` +
+                `**时间：** ${review.updated}\n\n`
+        }
+      };
+
+      await axios.post(url, message);
+      console.log(`已发送通知: ${review.title}`);
+      
+      // 避免频繁请求
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  } catch (error) {
+    console.error('发送钉钉通知失败:', error.message);
+  }
+}
+
+// 主函数
+async function main() {
+  console.log('开始检查 App Store 评论...');
+  console.log(`App ID: ${config.appId}, 国家: ${config.countryCode}`);
+  
+  const currentReviews = await fetchReviews();
+  
+  if (currentReviews.length === 0) {
+    console.log('未获取到评论数据');
+    return;
+  }
+  
+  console.log(`获取到 ${currentReviews.length} 条评论`);
+  
+  const historyReviews = readHistoryReviews();
+  const historyIds = new Set(historyReviews.map(r => r.id));
+  
+  // 找出新评论
+  const newReviews = currentReviews.filter(review => !historyIds.has(review.id));
+  
+  if (newReviews.length > 0) {
+    console.log(`发现 ${newReviews.length} 条新评论`);
+    await sendDingTalkNotification(newReviews);
+  } else {
+    console.log('没有新评论');
+  }
+  
+  // 保存最新数据
+  saveReviews(currentReviews);
+  
+  // 生成网页
+  generateWebPage(currentReviews);
+}
+
+// 生成展示网页
+function generateWebPage(reviews) {
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Store 评论监控</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #1d1d1f; margin-bottom: 30px; text-align: center; }
+    .review-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .review-title { font-size: 18px; font-weight: 600; color: #1d1d1f; }
+    .review-rating { color: #ff9500; font-size: 16px; }
+    .review-content { color: #424245; line-height: 1.6; margin-bottom: 15px; }
+    .review-meta { display: flex; justify-content: space-between; color: #86868b; font-size: 14px; }
+    .update-time { text-align: center; color: #86868b; margin-top: 30px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 App Store 评论监控</h1>
+    ${reviews.map(review => `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-title">${escapeHtml(review.title)}</div>
+        <div class="review-rating">${'⭐'.repeat(parseInt(review.rating) || 0)}</div>
+      </div>
+      <div class="review-content">${escapeHtml(review.content)}</div>
+      <div class="review-meta">
+        <span>👤 ${escapeHtml(review.author)}</span>
+        <span>🕐 ${review.updated}</span>
+      </div>
+    </div>
+    `).join('')}
+    <div class="update-time">最后更新: ${new Date().toLocaleString('zh-CN')}</div>
+  </div>
+</body>
+</html>`;
+
+  fs.writeFileSync('./index.html', html, 'utf8');
+  console.log('网页已生成: index.html');
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// 执行
+main().catch(console.error);
