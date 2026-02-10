@@ -12,35 +12,42 @@
 
 ## 配置步骤
 
-### 1. 获取钉钉 Webhook
+### 1. 配置 App Store Connect API
+
+本项目使用 App Store Connect API 获取实时评论数据。
+
+**详细配置指南**：[App Store Connect API 配置指南](docs/app-store-connect-api-guide.md)
+
+**快速步骤**：
+1. 登录 [App Store Connect](https://appstoreconnect.apple.com/)
+2. 进入 "用户和访问" → "密钥" → "App Store Connect API"
+3. 生成新密钥（权限选择 "Customer Support"）
+4. 记录：Issuer ID、Key ID、下载私钥文件（.p8）
+
+### 2. 获取钉钉 Webhook
 
 1. 在钉钉群中添加自定义机器人
 2. 选择"自定义机器人"
 3. 复制 Webhook 地址
 4. 如果启用了"加签"安全设置，记录密钥
 
-### 2. 配置 GitHub Secrets
+### 3. 配置 GitHub Secrets
 
 在 GitHub 仓库设置中添加以下 Secrets：
 
 | Secret 名称 | 说明 | 是否必需 | 示例 |
 |------------|------|---------|------|
-| `APP_ID` | App Store 应用 ID | 必需 | `414478124` |
-| `COUNTRY_CODE` | 国家代码 | 必需 | `cn`, `us`, `jp` |
+| `APP_ID` | App Store 应用 ID | 必需 | `1234567890` |
+| `API_KEY_ID` | App Store Connect API Key ID | 必需 | `ABCDE12345` |
+| `API_ISSUER_ID` | App Store Connect API Issuer ID | 必需 | `12345678-1234-1234-1234-123456789012` |
+| `API_KEY_CONTENT` | App Store Connect API 私钥内容 | 必需 | `-----BEGIN PRIVATE KEY-----\n...` |
 | `DINGTALK_WEBHOOK` | 钉钉机器人 Webhook | 必需 | `https://oapi.dingtalk.com/robot/send?access_token=xxx` |
 | `DINGTALK_SECRET` | 钉钉加签密钥 | 可选 | `SECxxx...` |
 
 **如何找到 App ID：**
-- 在 App Store 中找到你的应用
-- 查看 URL，例如：`https://apps.apple.com/cn/app/wechat/id414478124`
-- 其中 `414478124` 就是 App ID
-
-**常用国家代码：**
-- `cn` - 中国
-- `us` - 美国
-- `jp` - 日本
-- `hk` - 香港
-- `tw` - 台湾
+- 登录 App Store Connect
+- 进入 "我的 App" → 选择应用
+- 在 "App 信息" 页面查看 "Apple ID"
 
 ### 3. 启用 GitHub Actions
 

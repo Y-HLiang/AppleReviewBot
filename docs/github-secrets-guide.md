@@ -69,6 +69,8 @@
 8. 选择安全设置：
    - **推荐**：选择"加签"（更安全）
    - 或选择"自定义关键词"（输入：评论）
+   <!-- https://oapi.dingtalk.com/robot/send?access_token=b5a106cebb0a440f79ba62d8e366b56f1facdc7b8e6dcf669f86bf99bf8f5c3b -->
+   <!-- SEC3d7479fb8e5408733a42bc4bcb28e2d474a8646fc84d999ed4eec8a8dd2791f6 -->
 9. 复制 Webhook 地址，格式如下：
    ```
    https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxx
