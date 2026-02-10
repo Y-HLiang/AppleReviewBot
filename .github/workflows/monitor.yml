@@ -31,6 +31,7 @@ jobs:
         COUNTRY_CODE: ${{ secrets.COUNTRY_CODE }}
         DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
         DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+        WEB_URL: https://y-hliang.github.io/AppleReviewBot/web/
       run: npm start
       
     - name: Commit and push if changed

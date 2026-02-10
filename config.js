@@ -7,6 +7,9 @@ module.exports = {
   dingtalkWebhook: process.env.DINGTALK_WEBHOOK || '',
   dingtalkSecret: process.env.DINGTALK_SECRET || '', // 可选，如果启用了加签
   
+  // GitHub Pages 地址（用于通知中的链接）
+  webUrl: process.env.WEB_URL || 'https://y-hliang.github.io/AppleReviewBot/web/',
+  
   // 数据存储文件
   dataFile: './data/reviews.json',
   

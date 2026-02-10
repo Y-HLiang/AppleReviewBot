@@ -57,7 +57,7 @@ function saveReviews(reviews) {
   }
 }
 
-// 发送钉钉通知
+// 发送钉钉通知（汇总新评论）
 async function sendDingTalkNotification(newReviews) {
   if (!config.dingtalkWebhook) {
     console.log('未配置钉钉 Webhook，跳过通知');
@@ -78,26 +78,45 @@ async function sendDingTalkNotification(newReviews) {
       url += `&timestamp=${timestamp}&sign=${encodeURIComponent(sign)}`;
     }
 
-    for (const review of newReviews) {
-      const message = {
-        msgtype: 'markdown',
-        markdown: {
-          title: '新的 App Store 评论',
-          text: `### 📱 新的 App Store 评论\n\n` +
-                `**评分：** ${'⭐'.repeat(parseInt(review.rating) || 0)}\n\n` +
-                `**标题：** ${review.title}\n\n` +
-                `**内容：** ${review.content}\n\n` +
-                `**作者：** ${review.author}\n\n` +
-                `**时间：** ${review.updated}\n\n`
-        }
-      };
+    // 计算评分分布
+    const ratingStats = {};
+    newReviews.forEach(review => {
+      const rating = review.rating || 'N/A';
+      ratingStats[rating] = (ratingStats[rating] || 0) + 1;
+    });
 
-      await axios.post(url, message);
-      console.log(`已发送通知: ${review.title}`);
-      
-      // 避免频繁请求
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    // 构建评分统计文本
+    let ratingText = '';
+    for (let i = 5; i >= 1; i--) {
+      if (ratingStats[i.toString()]) {
+        ratingText += `${'⭐'.repeat(i)} × ${ratingStats[i.toString()]}\n\n`;
+      }
     }
+
+    // 显示最新的3条评论标题
+    const previewReviews = newReviews.slice(0, 3);
+    let previewText = previewReviews.map((review, index) => 
+      `${index + 1}. ${review.title} (${'⭐'.repeat(parseInt(review.rating) || 0)})`
+    ).join('\n\n');
+
+    if (newReviews.length > 3) {
+      previewText += `\n\n...还有 ${newReviews.length - 3} 条评论`;
+    }
+
+    const message = {
+      msgtype: 'markdown',
+      markdown: {
+        title: `发现 ${newReviews.length} 条新评论`,
+        text: `### 📱 发现 ${newReviews.length} 条新的 App Store 评论\n\n` +
+              `**评分分布：**\n\n${ratingText}\n` +
+              `**最新评论预览：**\n\n${previewText}\n\n` +
+              `---\n\n` +
+              `[点击查看完整评论](${config.webUrl}?appId=${config.appId}&country=${config.countryCode})`
+      }
+    };
+
+    await axios.post(url, message);
+    console.log(`已发送汇总通知: ${newReviews.length} 条新评论`);
   } catch (error) {
     console.error('发送钉钉通知失败:', error.message);
   }
