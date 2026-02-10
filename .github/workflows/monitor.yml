@@ -28,9 +28,7 @@ jobs:
     - name: Run monitor
       env:
         APP_ID: ${{ secrets.APP_ID }}
-        API_KEY_ID: ${{ secrets.API_KEY_ID }}
-        API_ISSUER_ID: ${{ secrets.API_ISSUER_ID }}
-        API_KEY_CONTENT: ${{ secrets.API_KEY_CONTENT }}
+        COUNTRY_CODE: ${{ secrets.COUNTRY_CODE }}
         DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
         DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
         WEB_URL: https://y-hliang.github.io/AppleReviewBot/web/

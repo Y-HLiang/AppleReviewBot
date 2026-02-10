@@ -2,7 +2,6 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 const config = require('./config');
 
 // 确保数据目录存在
@@ -11,63 +10,26 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// 生成 App Store Connect API JWT Token
-function generateToken() {
-  if (!config.apiKeyId || !config.apiIssuerId || !config.apiKeyContent) {
-    throw new Error('缺少 App Store Connect API 认证信息');
-  }
-
-  const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    iss: config.apiIssuerId,
-    iat: now,
-    exp: now + (20 * 60), // 20 分钟过期
-    aud: 'appstoreconnect-v1'
-  };
-
-  const token = jwt.sign(payload, config.apiKeyContent, {
-    algorithm: 'ES256',
-    header: {
-      alg: 'ES256',
-      kid: config.apiKeyId,
-      typ: 'JWT'
-    }
-  });
-
-  return token;
-}
-
 // 获取评论数据
 async function fetchReviews() {
   try {
-    const token = generateToken();
-    const url = config.getApiUrl();
+    const response = await axios.get(config.getApiUrl());
+    const entries = response.data.feed.entry || [];
     
-    const response = await axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      params: {
-        'sort': '-createdDate', // 按创建时间倒序
-        'limit': 200 // 最多获取 200 条
-      }
-    });
-    
-    const reviews = response.data.data.map(item => ({
-      id: item.id,
-      title: item.attributes.title || '无标题',
-      content: item.attributes.body || '',
-      rating: item.attributes.rating.toString(),
-      author: item.attributes.reviewerNickname || '匿名',
-      updated: item.attributes.createdDate,
-      timestamp: new Date(item.attributes.createdDate).getTime(),
-      territory: item.attributes.territory || 'Unknown'
+    // 过滤掉第一条（通常是 App 信息）
+    const reviews = entries.slice(1).map(entry => ({
+      id: entry.id.label,
+      title: entry.title.label,
+      content: entry.content.label,
+      rating: entry['im:rating']?.label || 'N/A',
+      author: entry.author.name.label,
+      updated: entry.updated.label,
+      timestamp: new Date(entry.updated.label).getTime()
     }));
     
     return reviews;
   } catch (error) {
-    console.error('获取评论失败:', error.response?.data || error.message);
+    console.error('获取评论失败:', error.message);
     return [];
   }
 }
@@ -149,7 +111,7 @@ async function sendDingTalkNotification(newReviews) {
               `**评分分布：**\n\n${ratingText}\n` +
               `**最新评论预览：**\n\n${previewText}\n\n` +
               `---\n\n` +
-              `[点击查看完整评论](${config.webUrl}?appId=${config.appId})`
+              `[点击查看完整评论](${config.webUrl}?appId=${config.appId}&country=${config.countryCode})`
       }
     };
 
@@ -199,7 +161,7 @@ async function sendCheckCompleteNotification() {
 // 主函数
 async function main() {
   console.log('开始检查 App Store 评论...');
-  console.log(`App ID: ${config.appId}`);
+  console.log(`App ID: ${config.appId}, 国家: ${config.countryCode}`);
   
   const currentReviews = await fetchReviews();
   
