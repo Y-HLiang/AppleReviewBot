@@ -1,6 +1,6 @@
 module.exports = {
   // App Store 配置
-  appId: process.env.APP_ID || '414478124', // 默认微信 AppID
+  appId: process.env.APP_ID || '1526117209', // 默认微信 AppID
   countryCode: process.env.COUNTRY_CODE || 'cn', // 国家代码
   
   // 钉钉配置
