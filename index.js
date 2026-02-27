@@ -10,20 +10,30 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+// 获取 App 信息
+async function fetchAppInfo() {
+  try {
+    const url = `https://itunes.apple.com/lookup?id=${config.appId}&country=${config.countryCode}`;
+    const response = await axios.get(url);
+    
+    if (response.data.results && response.data.results.length > 0) {
+      return response.data.results[0].trackName || 'App';
+    }
+    return 'App';
+  } catch (error) {
+    console.error('获取 App 信息失败:', error.message);
+    return 'App';
+  }
+}
+
 // 获取评论数据
 async function fetchReviews() {
   try {
     const response = await axios.get(config.getApiUrl());
     const entries = response.data.feed.entry || [];
     
-    // 第一条通常是 App 信息
-    let appName = 'App';
-    if (entries.length > 0 && entries[0]['im:name']) {
-      appName = entries[0]['im:name'].label;
-    }
-    
-    // 过滤掉第一条（通常是 App 信息）
-    const reviews = entries.slice(1).map(entry => ({
+    // 所有条目都是评论
+    const reviews = entries.map(entry => ({
       id: entry.id.label,
       title: entry.title.label,
       content: entry.content.label,
@@ -33,10 +43,10 @@ async function fetchReviews() {
       timestamp: new Date(entry.updated.label).getTime()
     }));
     
-    return { appName, reviews };
+    return reviews;
   } catch (error) {
     console.error('获取评论失败:', error.message);
-    return { appName: 'App', reviews: [] };
+    return [];
   }
 }
 
@@ -184,14 +194,18 @@ async function main() {
   console.log('开始检查 App Store 评论...');
   console.log(`App ID: ${config.appId}, 国家: ${config.countryCode}`);
   
-  const { appName, reviews: currentReviews } = await fetchReviews();
+  // 获取 App 名称
+  const appName = await fetchAppInfo();
+  console.log(`App 名称: ${appName}`);
+  
+  // 获取评论
+  const currentReviews = await fetchReviews();
   
   if (currentReviews.length === 0) {
     console.log('未获取到评论数据');
     return;
   }
   
-  console.log(`App 名称: ${appName}`);
   console.log(`获取到 ${currentReviews.length} 条评论`);
   
   const historyReviews = readHistoryReviews();
