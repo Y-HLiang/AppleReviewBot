@@ -18,13 +18,13 @@
 2. 搜索你要监控的应用
 3. 复制浏览器地址栏的 URL，例如：
    ```
-   https://apps.apple.com/cn/app/wechat/id414478124
+   https://apps.apple.com/cn/app/example/id1526117209
    ```
-4. 记录下 `id` 后面的数字：`414478124`
+4. 记录下 `id` 后面的数字：`1526117209`
 5. 记录下国家代码（URL 中的 `cn`、`us` 等）
 
 **示例：**
-- 微信（中国）：`414478124` / `cn`
+- 示例应用（中国）：`1526117209` / `cn`
 - Instagram（美国）：`389801252` / `us`
 - LINE（日本）：`443904275` / `jp`
 
@@ -86,7 +86,7 @@ cd appstore-review-monitor
 
 | Name | Value | 示例 |
 |------|-------|------|
-| `APP_ID` | 你的 App ID | `414478124` |
+| `APP_ID` | 你的 App ID | `1526117209` |
 | `COUNTRY_CODE` | 国家代码 | `cn` |
 | `DINGTALK_WEBHOOK` | 钉钉 Webhook 完整地址 | `https://oapi.dingtalk.com/robot/send?access_token=xxx` |
 | `DINGTALK_SECRET` | 加签密钥（可选） | `SECxxx...` |
@@ -176,7 +176,7 @@ on:
 npm install
 
 # 设置环境变量
-export APP_ID="414478124"
+export APP_ID="1526117209"
 export COUNTRY_CODE="cn"
 export DINGTALK_WEBHOOK="your_webhook"
 export DINGTALK_SECRET="your_secret"
@@ -211,7 +211,7 @@ npm start
 - 该应用在该国家/地区是否有评论
 - 尝试在浏览器中访问 API：
   ```
-  https://itunes.apple.com/cn/rss/customerreviews/id=414478124/sortBy=mostRecent/json
+  https://itunes.apple.com/cn/rss/customerreviews/id=1526117209/sortBy=mostRecent/json
   ```
 
 ---

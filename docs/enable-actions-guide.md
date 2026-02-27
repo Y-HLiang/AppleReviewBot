@@ -123,7 +123,7 @@ https://github.com/Y-HLiang/AppleReviewBot/settings/secrets/actions
 
 | Name | Value | 必需 | 示例 |
 |------|-------|------|------|
-| `APP_ID` | App Store 应用 ID | ✅ | `414478124` |
+| `APP_ID` | App Store 应用 ID | ✅ | `1526117209` |
 | `COUNTRY_CODE` | 国家代码（小写） | ✅ | `cn` |
 | `DINGTALK_WEBHOOK` | 钉钉机器人 Webhook | ✅ | `https://oapi.dingtalk.com/robot/send?access_token=xxx` |
 | `DINGTALK_SECRET` | 钉钉加签密钥 | ⭕ | `SECxxx...` |

@@ -29,9 +29,9 @@
 2. 搜索你的应用
 3. 查看 URL，例如：
    ```
-   https://apps.apple.com/cn/app/wechat/id414478124
+   https://apps.apple.com/cn/app/example/id1526117209
    ```
-4. 其中 `414478124` 就是 App ID
+4. 其中 `1526117209` 就是 App ID
 
 ### 3.2 添加 COUNTRY_CODE
 

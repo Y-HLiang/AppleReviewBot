@@ -1,5 +1,5 @@
 // 配置
-let APP_ID = '414478124'; // 默认微信
+let APP_ID = '1526117209'; // 默认 App ID
 let COUNTRY_CODE = 'cn'; // 默认中国
 
 // 从 URL 参数读取配置
