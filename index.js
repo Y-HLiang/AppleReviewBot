@@ -139,56 +139,6 @@ async function sendDingTalkNotification(newReviews, appName) {
   }
 }
 
-// 发送检查完成通知
-async function sendCheckCompleteNotification(allReviews, appName) {
-  if (!config.dingtalkWebhook) {
-    console.log('未配置钉钉 Webhook，跳过通知');
-    return;
-  }
-
-  try {
-    let url = config.dingtalkWebhook;
-    const timestamp = Date.now();
-    let sign = '';
-
-    // 如果配置了加签密钥
-    if (config.dingtalkSecret) {
-      const stringToSign = `${timestamp}\n${config.dingtalkSecret}`;
-      sign = crypto.createHmac('sha256', config.dingtalkSecret)
-        .update(stringToSign)
-        .digest('base64');
-      url += `&timestamp=${timestamp}&sign=${encodeURIComponent(sign)}`;
-    }
-
-    const now = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-    
-    // 显示最近的3条评论
-    const recentReviews = allReviews.slice(0, 3);
-    let recentText = recentReviews.map((review, index) => 
-      `${index + 1}. ${review.title} (${'⭐'.repeat(parseInt(review.rating) || 0)})`
-    ).join('\n\n');
-    
-    const message = {
-      msgtype: 'markdown',
-      markdown: {
-        title: `${appName} - 检查完成`,
-        text: `### ✅ ${appName}\n\n` +
-              `App Store 评论检查完成\n\n` +
-              `**检查时间：** ${now}\n\n` +
-              `**结果：** 暂无新评论\n\n` +
-              `**最近评论：**\n\n${recentText}\n\n` +
-              `---\n\n` +
-              `[点击查看完整评论](${config.webUrl}?appId=${config.appId}&country=${config.countryCode})`
-      }
-    };
-
-    await axios.post(url, message);
-    console.log('已发送检查完成通知');
-  } catch (error) {
-    console.error('发送检查完成通知失败:', error.message);
-  }
-}
-
 // 主函数
 async function main() {
   console.log('开始检查 App Store 评论...');
@@ -223,9 +173,8 @@ async function main() {
     // 首次运行
     console.log(`首次运行，发现 ${newReviews.length} 条评论，不发送通知`);
   } else {
-    // 没有新评论，发送检查完成通知
-    console.log('没有新评论，发送检查完成通知');
-    await sendCheckCompleteNotification(currentReviews, appName);
+    // 没有新评论
+    console.log('没有新评论');
   }
   
   // 保存最新数据
