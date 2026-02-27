@@ -16,6 +16,12 @@ async function fetchReviews() {
     const response = await axios.get(config.getApiUrl());
     const entries = response.data.feed.entry || [];
     
+    // 第一条通常是 App 信息
+    let appName = 'App';
+    if (entries.length > 0 && entries[0]['im:name']) {
+      appName = entries[0]['im:name'].label;
+    }
+    
     // 过滤掉第一条（通常是 App 信息）
     const reviews = entries.slice(1).map(entry => ({
       id: entry.id.label,
@@ -27,10 +33,10 @@ async function fetchReviews() {
       timestamp: new Date(entry.updated.label).getTime()
     }));
     
-    return reviews;
+    return { appName, reviews };
   } catch (error) {
     console.error('获取评论失败:', error.message);
-    return [];
+    return { appName: 'App', reviews: [] };
   }
 }
 
@@ -58,7 +64,7 @@ function saveReviews(reviews) {
 }
 
 // 发送钉钉通知（汇总新评论）
-async function sendDingTalkNotification(newReviews) {
+async function sendDingTalkNotification(newReviews, appName) {
   if (!config.dingtalkWebhook) {
     console.log('未配置钉钉 Webhook，跳过通知');
     return;
@@ -106,8 +112,9 @@ async function sendDingTalkNotification(newReviews) {
     const message = {
       msgtype: 'markdown',
       markdown: {
-        title: `发现 ${newReviews.length} 条新评论`,
-        text: `### 📱 发现 ${newReviews.length} 条新的 App Store 评论\n\n` +
+        title: `${appName} - 发现 ${newReviews.length} 条新评论`,
+        text: `### 📱 ${appName}\n\n` +
+              `发现 ${newReviews.length} 条新的 App Store 评论\n\n` +
               `**评分分布：**\n\n${ratingText}\n` +
               `**最新评论预览：**\n\n${previewText}\n\n` +
               `---\n\n` +
@@ -123,7 +130,7 @@ async function sendDingTalkNotification(newReviews) {
 }
 
 // 发送检查完成通知
-async function sendCheckCompleteNotification() {
+async function sendCheckCompleteNotification(allReviews, appName) {
   if (!config.dingtalkWebhook) {
     console.log('未配置钉钉 Webhook，跳过通知');
     return;
@@ -144,10 +151,24 @@ async function sendCheckCompleteNotification() {
     }
 
     const now = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    
+    // 显示最近的3条评论
+    const recentReviews = allReviews.slice(0, 3);
+    let recentText = recentReviews.map((review, index) => 
+      `${index + 1}. ${review.title} (${'⭐'.repeat(parseInt(review.rating) || 0)})`
+    ).join('\n\n');
+    
     const message = {
-      msgtype: 'text',
-      text: {
-        content: `✅ App Store 评论检查完成\n\n检查时间：${now}\n结果：暂无新评论`
+      msgtype: 'markdown',
+      markdown: {
+        title: `${appName} - 检查完成`,
+        text: `### ✅ ${appName}\n\n` +
+              `App Store 评论检查完成\n\n` +
+              `**检查时间：** ${now}\n\n` +
+              `**结果：** 暂无新评论\n\n` +
+              `**最近评论：**\n\n${recentText}\n\n` +
+              `---\n\n` +
+              `[点击查看完整评论](${config.webUrl}?appId=${config.appId}&country=${config.countryCode})`
       }
     };
 
@@ -163,13 +184,14 @@ async function main() {
   console.log('开始检查 App Store 评论...');
   console.log(`App ID: ${config.appId}, 国家: ${config.countryCode}`);
   
-  const currentReviews = await fetchReviews();
+  const { appName, reviews: currentReviews } = await fetchReviews();
   
   if (currentReviews.length === 0) {
     console.log('未获取到评论数据');
     return;
   }
   
+  console.log(`App 名称: ${appName}`);
   console.log(`获取到 ${currentReviews.length} 条评论`);
   
   const historyReviews = readHistoryReviews();
@@ -182,14 +204,14 @@ async function main() {
   if (newReviews.length > 0 && historyReviews.length > 0) {
     // 有新评论
     console.log(`发现 ${newReviews.length} 条新评论`);
-    await sendDingTalkNotification(newReviews);
+    await sendDingTalkNotification(newReviews, appName);
   } else if (newReviews.length > 0 && historyReviews.length === 0) {
     // 首次运行
     console.log(`首次运行，发现 ${newReviews.length} 条评论，不发送通知`);
   } else {
     // 没有新评论，发送检查完成通知
     console.log('没有新评论，发送检查完成通知');
-    await sendCheckCompleteNotification();
+    await sendCheckCompleteNotification(currentReviews, appName);
   }
   
   // 保存最新数据
