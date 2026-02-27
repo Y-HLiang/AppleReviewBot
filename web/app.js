@@ -54,18 +54,8 @@ async function loadReviews() {
     const data = await response.json();
     const entries = data.feed.entry || [];
     
-    // 第一条通常是 App 信息
-    if (entries.length > 0) {
-      appInfo = {
-        name: entries[0]['im:name']?.label || 'App',
-        icon: entries[0]['im:image']?.[2]?.label || '',
-        link: entries[0].link?.attributes?.href || ''
-      };
-      updateAppInfo();
-    }
-    
-    // 其余是评论数据
-    allReviews = entries.slice(1).map(entry => ({
+    // 所有条目都是评论（没有单独的 App 信息）
+    allReviews = entries.map(entry => ({
       id: entry.id.label,
       title: entry.title.label,
       content: entry.content.label,
@@ -75,12 +65,38 @@ async function loadReviews() {
       timestamp: new Date(entry.updated.label).getTime()
     }));
     
+    // 获取 App 信息
+    if (allReviews.length > 0) {
+      await fetchAppInfo();
+    }
+    
     filteredReviews = [...allReviews];
     hideLoading();
   } catch (error) {
     console.error('Error loading reviews:', error);
     hideLoading();
     throw error;
+  }
+}
+
+// 获取 App 信息
+async function fetchAppInfo() {
+  try {
+    const lookupUrl = `https://itunes.apple.com/lookup?id=${APP_ID}&country=${COUNTRY_CODE}`;
+    const response = await fetch(lookupUrl);
+    if (!response.ok) return;
+    
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      appInfo = {
+        name: data.results[0].trackName || 'App',
+        icon: data.results[0].artworkUrl512 || data.results[0].artworkUrl100 || '',
+        link: data.results[0].trackViewUrl || ''
+      };
+      updateAppInfo();
+    }
+  } catch (error) {
+    console.error('Error fetching app info:', error);
   }
 }
 
