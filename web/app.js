@@ -1,6 +1,6 @@
 // 配置
 let APP_ID = '1526117209'; // 默认 App ID
-let COUNTRY_CODE = 'cn'; // 默认中国
+let COUNTRY_CODE = 'tw'; // 默认台湾
 
 // 从 URL 参数读取配置
 const urlParams = new URLSearchParams(window.location.search);

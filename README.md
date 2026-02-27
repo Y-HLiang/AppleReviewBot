@@ -26,21 +26,21 @@
 | Secret 名称 | 说明 | 是否必需 | 示例 |
 |------------|------|---------|------|
 | `APP_ID` | App Store 应用 ID | 必需 | `1526117209` |
-| `COUNTRY_CODE` | 国家代码 | 必需 | `cn`, `us`, `jp` |
+| `COUNTRY_CODE` | 国家代码 | 必需 | `tw`, `cn`, `us`, `jp` |
 | `DINGTALK_WEBHOOK` | 钉钉机器人 Webhook | 必需 | `https://oapi.dingtalk.com/robot/send?access_token=xxx` |
 | `DINGTALK_SECRET` | 钉钉加签密钥 | 可选 | `SECxxx...` |
 
 **如何找到 App ID：**
 - 在 App Store 中找到你的应用
-- 查看 URL，例如：`https://apps.apple.com/cn/app/example/id1526117209`
+- 查看 URL，例如：`https://apps.apple.com/tw/app/example/id1526117209`
 - 其中 `1526117209` 就是 App ID
 
 **常用国家代码：**
+- `tw` - 台湾
 - `cn` - 中国
 - `us` - 美国
 - `jp` - 日本
 - `hk` - 香港
-- `tw` - 台湾
 
 ### 3. 启用 GitHub Actions
 
@@ -57,7 +57,7 @@ npm install
 
 # 配置环境变量（可选，也可以直接修改 config.js）
 export APP_ID="1526117209"
-export COUNTRY_CODE="cn"
+export COUNTRY_CODE="tw"
 export DINGTALK_WEBHOOK="your_webhook_url"
 export DINGTALK_SECRET="your_secret"
 

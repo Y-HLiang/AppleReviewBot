@@ -171,7 +171,7 @@
 | Name | Value | 说明 |
 |------|-------|------|
 | `APP_ID` | 你的 App ID | 例如：1526117209 |
-| `COUNTRY_CODE` | 国家代码 | 例如：cn |
+| `COUNTRY_CODE` | 国家代码 | 例如：tw |
 | `DINGTALK_WEBHOOK` | 钉钉 Webhook | 完整 URL |
 | `DINGTALK_SECRET` | 加签密钥 | 可选 |
 
